@@ -1,0 +1,24 @@
+{
+  "name": "full-stack-open",
+  "version": "1.0.0",
+  "description": "",
+  "main": "borrador.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "json-server": "node server-dev.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moiseshnava/full-stack-open.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moiseshnava/full-stack-open/issues"
+  },
+  "homepage": "https://github.com/moiseshnava/full-stack-open#readme",
+  "devDependencies": {
+    "json-server": "^0.17.3"
+  }
+}

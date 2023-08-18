@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react'
 import axios from "axios";
 import './App.css'
 import CountriesForm from './components/CountriesForm';
+import CountryCard from './components/CountryCard';
+import SimpleCountryCard from './components/SimpleCountryCard';
 
 function App() {
   const [countries, setCountries] = useState([]);
   const [copyCountries, setCopyCountries] = useState(countries);
   const [alert, setAlert] = useState(false);
+
   useEffect(() => {
     axios
       .get("https://restcountries.com/v3.1/all")
@@ -15,12 +18,7 @@ function App() {
 
   useEffect(() => {
     setCopyCountries(countries);
-  }, [countries])
-
-  useEffect(() => {
-    if (copyCountries === countries && alert === true) setAlert(false);
-
-  }, [copyCountries, alert])
+  }, [countries]);
 
   return (
     <div>
@@ -37,41 +35,34 @@ function App() {
         &&
         <ul>
           {
-            (copyCountries?.length >= 10 && alert &&
-              <p>{"Too many matches, specify another filter"}</p>)
+            (
+              (alert === true) &&
+              <p>{"Too many matches, specify another filter"}</p>
+            )
             ||
             (
               copyCountries?.length === 1 ?
                 copyCountries?.map(country => (
-                  <li key={country.name?.common}>
-                    <div>
-                      <h1>{country.name?.common}</h1>
-                      <p>capital {country.capital}</p>
-                      <p>population {country.population}</p>
-                    </div>
-                    <h2>languages</h2>
-                    <ul>
-                      {
-                        Object?.values(country.languages)?.map(language => (
-                          <li key={country.name.common + language}>{language}</li>
-                        ))
-                      }
-                    </ul>
-                      <figure>
-                        <img src={country.flags.png} alt={country.flags.alt} />
-                      </figure>
+                  <CountryCard
+                    country={country}
+                    countries={countries}
+                    setCopyCountries={setCopyCountries}
+                    key={country.name?.common}
+                  />
 
-                  </li>))
+                ))
                 : copyCountries?.map(country => (
-                  <li key={country.name?.common}>
-                    {country.name?.common}
-                  </li>
+                  <SimpleCountryCard
+                    country={country}
+                    copyCountry={copyCountries}
+                    setCopyCountries={setCopyCountries}
+                    key={country.name?.common + 1}
+                  />
+
                 ))
             )
           }
-
         </ul>
-
       }
     </div>
   )

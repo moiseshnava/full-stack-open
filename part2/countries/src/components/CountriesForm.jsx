@@ -9,22 +9,25 @@ const CountriesForm = ({
 }) => {
    const [countryName, setCountryName] = useState("");
 
-   useEffect(() => {
-      if (countryName.length === 0) {
-         setCopyCountries(countries)
-      } else {
-         const searchCountry = countries.filter(
-            country => (country.name?.common.toLowerCase().trim().split(" ").join("")
-               .includes(countryName.toLowerCase().trim().split(" ").join("")))
-         );
-         if (searchCountry.length >= 10) return setAlert(true);
 
-         const onlyOneCountry = searchCountry.find(
-            country => country.name.common.toLowerCase() === countryName.toLocaleLowerCase()
-         )
-         if (onlyOneCountry) return setCopyCountries([onlyOneCountry]);
-         return setCopyCountries(searchCountry);
-      }
+   useEffect(() => {
+      setAlert(false);
+      if (countryName.length === 0) return setCopyCountries([...countries]);
+      if (copyCountries !== countries && countryName.length === 0) return setAlert(false);
+      const searchCountry = countries.filter(
+         country => (country.name?.common.toLowerCase().trim().split(" ").join("")
+            .includes(countryName.toLowerCase().trim().split(" ").join("")))
+      )
+      if (countryName.length > 1 && searchCountry.length > 10) return setAlert(true);
+      if (searchCountry.length > 10) return setAlert(true);
+
+      const onlyOneCountry = searchCountry.find(
+         country => country.name.common.toLowerCase() === countryName.toLocaleLowerCase()
+      )
+      if (onlyOneCountry) return setCopyCountries([onlyOneCountry]);
+
+      return setCopyCountries(searchCountry);
+
    }, [countryName, setCopyCountries]);
 
    const handleInputCountryName = (e) => setCountryName(e.target.value);

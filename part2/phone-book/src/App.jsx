@@ -3,19 +3,20 @@ import './App.css';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
-import axios  from "axios";
+import axios from "axios";
+import personsService from "./services/persons";
 
 function App() {
   const [personas, setPersonas] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [copyPersonas, setCopyPersonas] = useState([]);
-  useEffect(() => {
-    axios
-    .get("http://localhost:3001/persons")
-    .then(response => setPersonas(response.data))
-    
-  }, [])
   
+  useEffect(() => {
+    personsService
+      .getAll()
+      .then(res => setPersonas(res))
+  }, [])
+
   useEffect(() => {
     if (searchInput.length < 2) setCopyPersonas(personas);
   }, [searchInput]);
@@ -44,9 +45,16 @@ function App() {
       <PersonForm
         personas={personas}
         setPersonas={setPersonas}
+        setCopyPersonas={setCopyPersonas}
       />
       <h2>Numbers</h2>
-      <Persons copyPersonas={copyPersonas} />
+      <Persons
+        copyPersonas={copyPersonas}
+        setPersonas={setPersonas}
+        personas={personas}
+        setCopyPersonas={setCopyPersonas}
+        
+      />
     </div>
   )
 }

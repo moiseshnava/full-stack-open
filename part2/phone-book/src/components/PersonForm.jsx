@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import personsService from "../services/persons";
 
 const textClean = (txt) => txt.replace(/\s+/g, " ").trim();
 
@@ -9,7 +10,8 @@ const validatePhoneNumber = (pn) => {
 
 const PersonForm = ({
    personas,
-   setPersonas
+   setPersonas,
+   setCopyPersonas
 }) => {
    const [nameAlert, setNameAlert] = useState(false);
    const [phoneNumber, setPhoneNumber] = useState("");
@@ -20,40 +22,68 @@ const PersonForm = ({
 
    const handleInputName = (e) => {
       setNewName(e.target.value);
+      setNameAlert(false);
    }
    const handleInputPhoneNumber = (e) => {
       setPhoneNumber(e.target.value);
+      setPhoneNumberAlert(false);
    }
 
    const handleSubmitForm = (e) => {
       e.preventDefault();
+
       if (newName.length < 2) {
          setNameAlert(true);
-         setTextAlert(`the name must have a minimum of 2 characters`)
+         return setTextAlert(`the name must have a minimum of 2 characters`)
       }
 
       let inputName = textClean(newName);
       const newPerson = {
          name: inputName,
-         phoneNumber: phoneNumber
+         number: phoneNumber
       }
       const result = personas.find(person => person.name.toLowerCase() === inputName.toLowerCase());
       const resultPhoneNumber = validatePhoneNumber(phoneNumber);
+      // if (result) {
+      //    // setNameAlert(true);
+      //    // setTextAlert(`${newName} is alredy added to phonebook`);
+      //    if(window.confirm(`${newName} is alredy added to phonebook, replace the old number with a new one?`)){
 
-      if (result) {
-         setNameAlert(true);
-         setTextAlert(`${newName} is alredy added to phonebook`);
-         return
-      } if (!resultPhoneNumber) {
+      //    }
+
+      // } 
+      if (!resultPhoneNumber) {
          setPhoneNumberAlert(true);
          setTextPhoneNumberAlert("phone number must have 10 digits");
          return
+      }
+      if (result) {
+         // setNameAlert(true);
+         // setTextAlert(`${newName} is alredy added to phonebook`);
+         if (window.confirm(`${newName} is alredy added to phonebook, replace the old number with a new one?`)) {
+            personsService
+               .update(result.id, newPerson)
+               .then(res => {
+                  window.confirm(`${newName} is alredy update.`)
+               });
+            personsService.getAll()
+               .then(res => setPersonas(res))
+            setNewName("");
+            setPhoneNumber("");
+            setNameAlert(false);
+            setPhoneNumberAlert(false);
+         }
+         return
       } else {
-         setPersonas((prevPersonas) => [...prevPersonas, newPerson]);
-         setNewName("");
-         setPhoneNumber("");
-         setNameAlert(false);
-         setPhoneNumberAlert(false);
+         personsService
+            .create(newPerson)
+            .then(res => {
+               setPersonas(personas.concat(res))
+               setNewName("");
+               setPhoneNumber("");
+               setNameAlert(false);
+               setPhoneNumberAlert(false);
+            });
       }
    }
 
@@ -78,7 +108,6 @@ const PersonForm = ({
                }
             </div>
          </div>
-         {/*  */}
          <div>
             <div>
                <label htmlFor="name">number: </label>

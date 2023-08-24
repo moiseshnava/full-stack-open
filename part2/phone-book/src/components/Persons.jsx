@@ -6,13 +6,25 @@ const Persons = ({
    copyPersonas,
    setCopyPersonas,
    setPersonas,
-   personas
+   personas,
+   setShowNotification,
+   setNotificationError,
+   setNotificationMessage,
 }) => {
-   const handleDelete = (id) => {
+   const handleDelete = (persona) => {
+      console.log(persona);
       personsService
-         .deletePerson(id)
+         .deletePerson(persona.id)
+         .then(res => {
+            console.log(res);
+         })
+         .catch(err => {
+            setShowNotification(true)
+            setNotificationError(true)
+            setNotificationMessage(`Information of ${persona.name} has already been removed from server`)
+         })
 
-      const updatePersons = personas.filter(persona => persona.id !== id )
+      const updatePersons = personas.filter(person => person.id !== persona.id)
       setPersonas(updatePersons)
    }
 
@@ -20,11 +32,11 @@ const Persons = ({
       <ul style={{ textAlign: "start" }}>
          {
             copyPersonas?.map(persona => (
-               <li key={persona.name}>
+               <li className='note' key={persona.name}>
                   <label htmlFor="">
                      {`${persona.name} ${persona.number}`}
                   </label>
-                  <button onClick={() => handleDelete(persona.id)}>x</button>
+                  <button onClick={() => handleDelete(persona)}>x</button>
                </li>
 
             ))

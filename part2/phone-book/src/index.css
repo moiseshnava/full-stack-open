@@ -19,6 +19,7 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
@@ -47,22 +48,75 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+
+h1 {
+  color: green;
+  font-style: italic;
+}
+
+.note {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: grey;
+  padding-top: 3px;
+  font-size: 15px;
+  list-style: none;
+  border-bottom: 2px solid #bbbbbb;
+  margin: 4px;
+
+}
+
+.notification-error {
+  color: red;
+  font-size: 18px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+.notification-ok {
+  color: green;
+  font-size: 18px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+.person-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  font-size: 19px;
+  font-weight: bold;
+}
+
+.person-form div {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+}
+
 
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }

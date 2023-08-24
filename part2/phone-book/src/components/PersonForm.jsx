@@ -11,7 +11,10 @@ const validatePhoneNumber = (pn) => {
 const PersonForm = ({
    personas,
    setPersonas,
-   setCopyPersonas
+   setCopyPersonas,
+   setShowNotification,
+   setNotificationError,
+   setNotificationMessage,
 }) => {
    const [nameAlert, setNameAlert] = useState(false);
    const [phoneNumber, setPhoneNumber] = useState("");
@@ -44,22 +47,13 @@ const PersonForm = ({
       }
       const result = personas.find(person => person.name.toLowerCase() === inputName.toLowerCase());
       const resultPhoneNumber = validatePhoneNumber(phoneNumber);
-      // if (result) {
-      //    // setNameAlert(true);
-      //    // setTextAlert(`${newName} is alredy added to phonebook`);
-      //    if(window.confirm(`${newName} is alredy added to phonebook, replace the old number with a new one?`)){
 
-      //    }
-
-      // } 
       if (!resultPhoneNumber) {
          setPhoneNumberAlert(true);
          setTextPhoneNumberAlert("phone number must have 10 digits");
          return
       }
       if (result) {
-         // setNameAlert(true);
-         // setTextAlert(`${newName} is alredy added to phonebook`);
          if (window.confirm(`${newName} is alredy added to phonebook, replace the old number with a new one?`)) {
             personsService
                .update(result.id, newPerson)
@@ -72,6 +66,8 @@ const PersonForm = ({
             setPhoneNumber("");
             setNameAlert(false);
             setPhoneNumberAlert(false);
+            setShowNotification(true);
+            setShowError(false)
          }
          return
       } else {
@@ -79,17 +75,21 @@ const PersonForm = ({
             .create(newPerson)
             .then(res => {
                setPersonas(personas.concat(res))
+               setNotificationMessage(`Added ${newPerson.name}`)
                setNewName("");
                setPhoneNumber("");
                setNameAlert(false);
                setPhoneNumberAlert(false);
+               setNotificationMessage(`Added ${res.name}`);
+               setShowNotification(true);
+               setShowError(false)
             });
       }
    }
 
    return (
 
-      <form onSubmit={handleSubmitForm}>
+      <form onSubmit={handleSubmitForm} className='person-form'>
          <div>
             <div>
                <label htmlFor="name">name: </label>
@@ -103,7 +103,7 @@ const PersonForm = ({
             <div>
                {
                   nameAlert
-                     ? <label htmlFor="" style={{ color: "red" }}>{textAlert}</label>
+                     ? <label htmlFor="" className='error'>{textAlert}</label>
                      : null
                }
             </div>
@@ -122,7 +122,7 @@ const PersonForm = ({
             <div>
                {
                   phoneNumberAlert
-                     ? <label htmlFor="" style={{ color: "red" }}>{textPhoneNumberAlert}</label>
+                     ? <label htmlFor="" className='error'>{textPhoneNumberAlert}</label>
                      : null
                }
             </div>

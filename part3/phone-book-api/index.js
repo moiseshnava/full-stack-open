@@ -1,5 +1,7 @@
+const morgan = require("morgan");
 const express = require("express");
 const app = express();
+
 
 let phoneBookData = [
    {
@@ -24,8 +26,22 @@ let phoneBookData = [
    }
 ];
 
-app.use(express.json());
+// custom tokens
+// nota importante por razones de seguridad y ley de privacidad
+//  no se deben mostrar datos este ejemplo es solo para desarrollo NO PARA PRODUCCIÓN
+morgan.token("custom-info", (request, response) => {
+   if (request.method === "POST") {
+      return JSON.stringify(request.body)
+   }
+   return "";
+});
 
+// middlewares
+app.use(express.json());
+// app.use(morgan("combined"));
+app.use(morgan(":method :url :status :response-time ms :custom-info"))
+
+// helpers
 const generateId = () => {
    const maxId = phoneBookData.length > 0
       ? Math.max(...phoneBookData.map(pb => pb.id)) + 1
@@ -39,6 +55,8 @@ const phoneBookInfo = (data) => {
 }
 
 
+
+// rutes
 app.get("/", (request, response) => {
    response.send("<h1>Hello World! </h1>");
 });
